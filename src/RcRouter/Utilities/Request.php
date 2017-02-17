@@ -107,15 +107,21 @@ class Request
     /**
      * Builds the route parameters
      *
-     * @param $params
+     * @param array $paramTypes
      * @return stdClass
      */
-    private function buildRouteParams($params): stdClass
+    private function buildRouteParams(array $paramTypes): stdClass
     {
         $routeObj = new stdClass();
 
-        foreach ($params as $key => $param) {
-            $routeObj->$key = $param;
+        foreach ($paramTypes as $key => $paramType) {
+            if ($key === 'all') {
+                continue;
+            }
+
+            foreach ($paramType as $key2 => $param) {
+                $routeObj->$key2 = $param;
+            }
         }
 
         return $routeObj;
