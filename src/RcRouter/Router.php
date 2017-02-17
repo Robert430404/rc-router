@@ -4,6 +4,7 @@ namespace RcRouter;
 
 use RcRouter\Contracts\RouterInterface;
 use RcRouter\Exceptions\WrongHttpMethodException;
+use RcRouter\Utilities\Parser;
 
 /**
  * Class Router
@@ -12,16 +13,23 @@ use RcRouter\Exceptions\WrongHttpMethodException;
  */
 class Router implements RouterInterface
 {
+    /**
+     * @var Parser
+     */
+    private $parser;
+
+    /**
+     * @var string
+     */
     private $method;
-    private $uri;
 
     /**
      * Router constructor.
      */
     public function __construct()
     {
+        $this->parser = new Parser();
         $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->uri    = $_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -37,6 +45,10 @@ class Router implements RouterInterface
         if ($this->method !== 'GET') {
             throw new WrongHttpMethodException('This is not a GET request.');
         }
+
+        if ($this->parser->parse($uri, $handler)) {
+            die();
+        }
     }
 
     /**
@@ -45,10 +57,18 @@ class Router implements RouterInterface
      * @param string $uri
      * @param $handler
      * @return mixed|void
+     * @throws WrongHttpMethodException
      */
     public function post(string $uri, $handler)
     {
+        if ($this->method !== 'POST') {
+            throw new WrongHttpMethodException('This is not a POST request.');
+        }
 
+        if ($uri === $this->uri) {
+            $handler();
+            die();
+        }
     }
 
     /**
@@ -57,10 +77,18 @@ class Router implements RouterInterface
      * @param string $uri
      * @param $handler
      * @return mixed|void
+     * @throws WrongHttpMethodException
      */
     public function put(string $uri, $handler)
     {
+        if ($this->method !== 'PUT') {
+            throw new WrongHttpMethodException('This is not a PUT request.');
+        }
 
+        if ($uri === $this->uri) {
+            $handler();
+            die();
+        }
     }
 
     /**
@@ -69,9 +97,17 @@ class Router implements RouterInterface
      * @param string $uri
      * @param $handler
      * @return mixed|void
+     * @throws WrongHttpMethodException
      */
     public function delete(string $uri, $handler)
     {
+        if ($this->method !== 'DELETE') {
+            throw new WrongHttpMethodException('This is not a DELETE request.');
+        }
 
+        if ($uri === $this->uri) {
+            $handler();
+            die();
+        }
     }
 }
