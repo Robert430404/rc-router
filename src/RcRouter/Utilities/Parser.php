@@ -100,7 +100,7 @@ class Parser
         $parts = explode('?', $this->uri);
 
         if ($parts[0] === $uri) {
-            $handler(new Request());
+            $handler();
 
             return true;
         }
@@ -132,7 +132,7 @@ class Parser
         $matchedRoute = '/' . implode('/', $mapped['all']);
 
         if ($this->uri === $matchedRoute) {
-            $handler(new Request($mapped));
+            $handler();
 
             return true;
         }
