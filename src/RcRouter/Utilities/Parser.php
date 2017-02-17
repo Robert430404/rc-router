@@ -117,21 +117,22 @@ class Parser
      */
     private function matchRegexRoute(string $route, $handler): bool
     {
-        $matches      = null;
-        $requestArray = explode('/', $route);
-        $matchArray   = explode('/', $this->uri);
+        $mapped     = null;
+        $routeArray = explode('/', $route);
+        $uriArray   = explode('/', $this->uri);
 
-        if (count($requestArray) === count($matchArray)) {
-            array_shift($requestArray);
-            array_shift($matchArray);
-
-            $matches = $this->matchParams($requestArray, $matchArray);
+        if (count($routeArray) !== count($uriArray)) {
+            return false;
         }
 
-        $matchedRoute = '/' . implode('/', $matches['all']);
+        array_shift($routeArray);
+        array_shift($uriArray);
+
+        $mapped       = $this->mapParams($routeArray, $uriArray);
+        $matchedRoute = '/' . implode('/', $mapped['all']);
 
         if ($this->uri === $matchedRoute) {
-            $handler(new Request($matches));
+            $handler(new Request($mapped));
 
             return true;
         }
@@ -142,41 +143,41 @@ class Parser
     /**
      * Returns the matched params
      *
-     * @param array $requestArray
-     * @param array $matchArray
+     * @param array $routeArray
+     * @param array $uriArray
      * @return array
      */
-    private function matchParams(array $requestArray, array $matchArray): array
+    private function mapParams(array $routeArray, array $uriArray): array
     {
         return [
-            'all'    => $this->matchAll($requestArray, $matchArray),
-            'int'    => $this->matchIntegers($requestArray, $matchArray),
-            'string' => $this->matchStrings($requestArray, $matchArray),
+            'all'    => $this->mapAllParams($routeArray, $uriArray),
+            'int'    => $this->mapIntParams($routeArray, $uriArray),
+            'string' => $this->mapStringParams($routeArray, $uriArray),
         ];
     }
 
     /**
      * Returns all route params
      *
-     * @param array $requestArray
-     * @param array $matchArray
+     * @param array $routeArray
+     * @param array $uriArray
      * @return array
      */
-    private function matchAll(array $requestArray, array $matchArray): array
+    private function mapAllParams(array $routeArray, array $uriArray): array
     {
         $mapped = [];
 
-        foreach ($requestArray as $key => $request) {
+        foreach ($routeArray as $key => $request) {
             $newKey = str_replace('{', '', $request);
             $newKey = str_replace(':i}', '', $newKey);
             $newKey = str_replace('}', '', $newKey);
 
             if (strpos($request, ':i') > 0) {
-                $mapped[$newKey] = (int)$matchArray[$key];
+                $mapped[$newKey] = (int)$uriArray[$key];
             }
 
             if (!strpos($request, ':i')) {
-                $mapped[$newKey] = $matchArray[$key];
+                $mapped[$newKey] = $uriArray[$key];
             }
         }
 
@@ -186,20 +187,20 @@ class Parser
     /**
      * Returns the integer route params
      *
-     * @param $requestArray
-     * @param $matchArray
+     * @param array $routeArray
+     * @param array $uriArray
      * @return array
      */
-    private function matchIntegers(array $requestArray, array $matchArray): array
+    private function mapIntParams(array $routeArray, array $uriArray): array
     {
         $mapped = [];
 
-        foreach ($requestArray as $key => $request) {
+        foreach ($routeArray as $key => $request) {
             if (strpos($request, ':i') > 0) {
                 $newKey = str_replace('{', '', $request);
                 $newKey = str_replace(':i}', '', $newKey);
 
-                $mapped[$newKey] = (int)$matchArray[$key];
+                $mapped[$newKey] = (int)$uriArray[$key];
             }
         }
 
@@ -209,20 +210,20 @@ class Parser
     /**
      * Returns the string route params
      *
-     * @param $requestArray
-     * @param $matchArray
+     * @param array $routeArray
+     * @param array $uriArray
      * @return array
      */
-    private function matchStrings(array $requestArray, array $matchArray): array
+    private function mapStringParams(array $routeArray, array $uriArray): array
     {
         $mapped = [];
 
-        foreach ($requestArray as $key => $request) {
+        foreach ($routeArray as $key => $request) {
             if (!strpos($request, ':i') && strpos($request, '}') > 0) {
                 $newKey = str_replace('{', '', $request);
                 $newKey = str_replace('}', '', $newKey);
 
-                $mapped[$newKey] = $matchArray[$key];
+                $mapped[$newKey] = $uriArray[$key];
             }
         }
 
