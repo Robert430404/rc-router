@@ -123,6 +123,11 @@ class Parser
         $routeArray = explode('/', $route);
         $uriArray   = explode('/', $this->uri);
 
+        if (strpos($this->uri, '?') > 0) {
+            $parts    = explode('?', $this->uri);
+            $uriArray = explode('/', $parts[0]);
+        }
+
         if (count($routeArray) !== count($uriArray)) {
             return false;
         }
@@ -133,8 +138,12 @@ class Parser
         $mapped       = $this->mapParams($routeArray, $uriArray);
         $matchedRoute = '/' . implode('/', $mapped['all']);
 
+        if (isset($parts)) {
+            $matchedRoute = '/' . implode('/', $mapped['all']) . '?' . $parts[1];
+        }
+
         if ($this->uri === $matchedRoute) {
-            $handler();
+            $handler($mapped);
 
             return true;
         }

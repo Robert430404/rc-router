@@ -43,8 +43,11 @@ class ParserTest extends TestCase
      */
     public function testIntegerRegexRoute()
     {
-        $parser = new Parser('/{id:i}/{post:i}');
-        $route  = $parser->parse('/1/32', function () {
+        $parser = new Parser('/1/32');
+        $route  = $parser->parse('/{id:i}/{post:i}', function ($mapped) {
+            $this->assertEquals($mapped['int']['id'], 1);
+            $this->assertEquals($mapped['int']['post'], 32);
+
             return true;
         });
 
@@ -56,8 +59,11 @@ class ParserTest extends TestCase
      */
     public function testStringRegexRoute()
     {
-        $parser = new Parser('/{id}/{post}');
-        $route  = $parser->parse('/1/32', function () {
+        $parser = new Parser('/help/me');
+        $route  = $parser->parse('/{first}/{second}', function ($mapped) {
+            $this->assertEquals($mapped['string']['first'], 'help');
+            $this->assertEquals($mapped['string']['second'], 'me');
+
             return true;
         });
 
@@ -69,8 +75,12 @@ class ParserTest extends TestCase
      */
     public function testMixedRegexRoute()
     {
-        $parser = new Parser('/{id:i}/{post:i}/{postName}');
-        $route  = $parser->parse('/1/32/best-post-ever', function () {
+        $parser = new Parser('/1/32/best-post-ever');
+        $route  = $parser->parse('/{id:i}/{post:i}/{postName}', function ($mapped) {
+            $this->assertEquals($mapped['int']['id'], 1);
+            $this->assertEquals($mapped['int']['post'], 32);
+            $this->assertEquals($mapped['string']['postName'], 'best-post-ever');
+
             return true;
         });
 
@@ -82,8 +92,8 @@ class ParserTest extends TestCase
      */
     public function testIntegerRegexRouteWithQueryString()
     {
-        $parser = new Parser('/{id:i}/{post:i}');
-        $route  = $parser->parse('/1/32?test=this-is-a-test', function () {
+        $parser = new Parser('/1/32?test=this-is-a-test');
+        $route  = $parser->parse('/{id:i}/{post:i}', function ($mapped) {
             return true;
         });
 
@@ -95,8 +105,8 @@ class ParserTest extends TestCase
      */
     public function testStringRegexRouteWithQueryString()
     {
-        $parser = new Parser('/{id}/{post}');
-        $route  = $parser->parse('/1/32?test=this-is-a-test', function () {
+        $parser = new Parser('/1/32?test=this-is-a-test');
+        $route  = $parser->parse('/{id}/{post}', function ($mapped) {
             return true;
         });
 
@@ -108,8 +118,8 @@ class ParserTest extends TestCase
      */
     public function testMixedRegexRouteWithQueryString()
     {
-        $parser = new Parser('/{id:i}/{post:i}/{postName}');
-        $route  = $parser->parse('/1/32/best-post-ever?test=this-is-a-test', function () {
+        $parser = new Parser('/1/32/best-post-ever?test=this-is-a-test');
+        $route  = $parser->parse('/{id:i}/{post:i}/{postName}', function ($mapped) {
             return true;
         });
 
