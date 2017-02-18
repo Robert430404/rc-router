@@ -36,10 +36,12 @@ class Parser
 
     /**
      * Parser constructor.
+     *
+     * @param string $uri
      */
-    function __construct()
+    function __construct(string $uri)
     {
-        $this->uri               = $_SERVER['REQUEST_URI'];
+        $this->uri               = $uri;
         $this->intRegex          = '/\/([\-0-9]+)/';
         $this->stringRegex       = '/\/([a-zA-Z]+)/';
         $this->intPlaceholder    = '/{([A-Za-z]+:[i])}/';

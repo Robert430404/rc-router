@@ -25,11 +25,14 @@ class Router implements RouterInterface
 
     /**
      * Router constructor.
+     *
+     * @param string $uri
+     * @param string $method
      */
-    public function __construct()
+    public function __construct(string $uri, string $method)
     {
-        $this->parser = new Parser();
-        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->parser = new Parser($uri);
+        $this->method = $method;
     }
 
     /**
