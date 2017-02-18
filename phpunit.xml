@@ -12,7 +12,7 @@
             </exclude>
         </whitelist>
     </filter>
-    <!--<logging>-->
-        <!--<log type="coverage-clover" target="clover.xml"/>-->
-    <!--</logging>-->
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+    </logging>
 </phpunit>
