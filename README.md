@@ -9,11 +9,16 @@ I did it flex my brain, and to get a full understanding of how routing works in 
 rather than just reading about it and assumeing I knew what did what, I wrote this to solidify my
 knowledge.
 
+### Installing The Package
+
+Simply use composer:
+
+    composer require robert430404/rc-router
+
 ### How Does It Work?
 
-This is (will be) a composer package (once I have the tests finished) so it relies on composer for
-the autoloading of the classes. You then instanciate a new instance of the Router() object and pass
-in the request URI and the request Method. 
+This is a composer package so it relies on composer for the autoloading of the classes. You then
+create a new instance of the Router() object and pass in the request URI and the request Method. 
 
 Those can be attained from anywhere you trust. (Globals, Request Object, etc...)
 
@@ -34,9 +39,7 @@ $router->get('/', function () {
 ### What Are Some Of The Features?
 
 The router supports both string and integer url variables, and passes them back to you in an array.
-You can extend this further (I actually built a request object that took this information and handed
-you back a nice object to work with) in any way you want. The router is very flexible in how you can
-use it.
+You can extend this further in any way you want. The router is very flexible in how you can use it.
 
 You can either pass in a closure, or a named handler function.
 
