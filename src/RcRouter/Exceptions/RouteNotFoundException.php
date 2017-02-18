@@ -4,12 +4,7 @@ namespace RcRouter\Exceptions;
 
 use Exception;
 
-/**
- * Class WrongHttpMethodException
- *
- * @package RcRouter\Exceptions
- */
-class WrongHttpMethodException extends Exception
+class RouteNotFoundException extends Exception
 {
     /**
      * WrongHttpMethodException constructor.
