@@ -1,3 +1,7 @@
+[![Latest Stable Version](https://poser.pugx.org/robert430404/rc-router/v/stable)](https://packagist.org/packages/robert430404/rc-router)
+[![Build Status](https://travis-ci.org/Robert430404/rc-router.svg?branch=master)](https://travis-ci.org/Robert430404/rc-router)
+[![codecov](https://codecov.io/gh/Robert430404/rc-router/branch/master/graph/badge.svg)](https://codecov.io/gh/Robert430404/rc-router)
+
 ### What Is This?
 
 This is RC Router. This is a simple regex based router that allows you to pass variables by using
