@@ -37,7 +37,7 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return mixed|void
+     * @return void
      * @throws WrongHttpMethodException
      */
     public function get(string $uri, $handler)
@@ -56,7 +56,7 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return mixed|void
+     * @return void
      * @throws WrongHttpMethodException
      */
     public function post(string $uri, $handler)
@@ -65,8 +65,7 @@ class Router implements RouterInterface
             throw new WrongHttpMethodException('This is not a POST request.');
         }
 
-        if ($uri === $this->uri) {
-            $handler();
+        if ($this->parser->parse($uri, $handler)) {
             die();
         }
     }
@@ -76,7 +75,7 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return mixed|void
+     * @return void
      * @throws WrongHttpMethodException
      */
     public function put(string $uri, $handler)
@@ -85,8 +84,7 @@ class Router implements RouterInterface
             throw new WrongHttpMethodException('This is not a PUT request.');
         }
 
-        if ($uri === $this->uri) {
-            $handler();
+        if ($this->parser->parse($uri, $handler)) {
             die();
         }
     }
@@ -96,7 +94,7 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return mixed|void
+     * @return void
      * @throws WrongHttpMethodException
      */
     public function delete(string $uri, $handler)
@@ -105,9 +103,19 @@ class Router implements RouterInterface
             throw new WrongHttpMethodException('This is not a DELETE request.');
         }
 
-        if ($uri === $this->uri) {
-            $handler();
+        if ($this->parser->parse($uri, $handler)) {
             die();
         }
+    }
+
+    /**
+     * This handles any unregistered or not found routes.
+     *
+     * @param $handler
+     * @return void
+     */
+    public function notFound($handler)
+    {
+        $handler(); die();
     }
 }

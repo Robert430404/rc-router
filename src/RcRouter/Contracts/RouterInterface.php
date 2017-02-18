@@ -44,4 +44,12 @@ interface RouterInterface
      * @return mixed
      */
     public function delete(string $uri, $handler);
+
+    /**
+     * This handles any unregistered or not found routes.
+     *
+     * @param $handler
+     * @return mixed
+     */
+    public function notFound($handler);
 }
