@@ -30,8 +30,8 @@ class ParserTest extends TestCase
      */
     public function testQueryStringRoute()
     {
-        $parser = new Parser('/');
-        $route  = $parser->parse('/?test=this-test-is-awesome', function () {
+        $parser = new Parser('/?test=this-test-is-awesome');
+        $route  = $parser->parse('/', function () {
             return true;
         });
 
