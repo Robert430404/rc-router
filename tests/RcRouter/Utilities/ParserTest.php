@@ -135,4 +135,17 @@ class ParserTest extends TestCase
 
         $this->assertEquals($route, true);
     }
+
+    /**
+     * Tests to make sure the parser fails out if nothing matches
+     */
+    public function testRegexRouteMismatch()
+    {
+        $parser = new Parser('/1');
+        $route  = $parser->parse('/{id:i}/{postName}', function () {
+            return true;
+        });
+
+        $this->assertEquals($route, false);
+    }
 }
