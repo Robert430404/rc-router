@@ -148,4 +148,17 @@ class ParserTest extends TestCase
 
         $this->assertEquals($route, false);
     }
+
+    /**
+     * Tests to make sure the parser fails out if nothing matches
+     */
+    public function testRegexRouteMismatchAfterCount()
+    {
+        $parser = new Parser('/death/1/test-name');
+        $route  = $parser->parse('/home/{id:i}/{postName}', function () {
+            return true;
+        });
+
+        $this->assertEquals($route, false);
+    }
 }

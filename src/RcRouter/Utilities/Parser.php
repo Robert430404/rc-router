@@ -184,11 +184,15 @@ class Parser
             $newKey = str_replace('}', '', $newKey);
 
             if (strpos($request, ':i') > 0) {
-                $mapped[$newKey] = (int)$uriArray[$key];
+                $mapped[$newKey] = $uriArray[$key];
             }
 
-            if (!strpos($request, ':i')) {
+            if (strpos($request, ':i') === false) {
                 $mapped[$newKey] = $uriArray[$key];
+            }
+
+            if (strpos($request, '{') === false) {
+                $mapped[$newKey] = $request;
             }
         }
 
@@ -208,10 +212,13 @@ class Parser
 
         foreach ($routeArray as $key => $request) {
             if (strpos($request, ':i') > 0) {
-                $newKey = str_replace('{', '', $request);
-                $newKey = str_replace(':i}', '', $newKey);
+                $newKey          = str_replace('{', '', $request);
+                $newKey          = str_replace(':i}', '', $newKey);
+                $mapped[$newKey] = $uriArray[$key];
 
-                $mapped[$newKey] = (int)$uriArray[$key];
+                if (strpos($request, '{') === false) {
+                    $mapped[$newKey] = $request;
+                }
             }
         }
 
@@ -230,11 +237,14 @@ class Parser
         $mapped = [];
 
         foreach ($routeArray as $key => $request) {
-            if (!strpos($request, ':i') && strpos($request, '}') > 0) {
-                $newKey = str_replace('{', '', $request);
-                $newKey = str_replace('}', '', $newKey);
-
+            if (strpos($request, ':i') === false && strpos($request, '}') > 0) {
+                $newKey          = str_replace('{', '', $request);
+                $newKey          = str_replace('}', '', $newKey);
                 $mapped[$newKey] = $uriArray[$key];
+
+                if (strpos($request, '{') === false) {
+                    $mapped[$newKey] = $request;
+                }
             }
         }
 
