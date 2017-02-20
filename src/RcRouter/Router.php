@@ -40,18 +40,16 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return void
+     * @return bool
      * @throws WrongHttpMethodException
      */
-    public function get(string $uri, $handler)
+    public function get(string $uri, $handler): bool
     {
         if ($this->method !== 'GET') {
             throw new WrongHttpMethodException('This is not a GET request.');
         }
 
-        if ($this->parser->parse($uri, $handler)) {
-            die();
-        }
+        return $this->parser->parse($uri, $handler);
     }
 
     /**
@@ -59,18 +57,16 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return void
+     * @return bool
      * @throws WrongHttpMethodException
      */
-    public function post(string $uri, $handler)
+    public function post(string $uri, $handler): bool
     {
         if ($this->method !== 'POST') {
             throw new WrongHttpMethodException('This is not a POST request.');
         }
 
-        if ($this->parser->parse($uri, $handler)) {
-            die();
-        }
+        return $this->parser->parse($uri, $handler);
     }
 
     /**
@@ -78,18 +74,16 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return void
+     * @return bool
      * @throws WrongHttpMethodException
      */
-    public function put(string $uri, $handler)
+    public function put(string $uri, $handler): bool
     {
         if ($this->method !== 'PUT') {
             throw new WrongHttpMethodException('This is not a PUT request.');
         }
 
-        if ($this->parser->parse($uri, $handler)) {
-            die();
-        }
+        return $this->parser->parse($uri, $handler);
     }
 
     /**
@@ -97,18 +91,16 @@ class Router implements RouterInterface
      *
      * @param string $uri
      * @param $handler
-     * @return void
+     * @return bool
      * @throws WrongHttpMethodException
      */
-    public function delete(string $uri, $handler)
+    public function delete(string $uri, $handler): bool
     {
         if ($this->method !== 'DELETE') {
             throw new WrongHttpMethodException('This is not a DELETE request.');
         }
 
-        if ($this->parser->parse($uri, $handler)) {
-            die();
-        }
+        return $this->parser->parse($uri, $handler);
     }
 
     /**
@@ -119,6 +111,6 @@ class Router implements RouterInterface
      */
     public function notFound($handler)
     {
-        $handler(); die();
+        $handler();
     }
 }
