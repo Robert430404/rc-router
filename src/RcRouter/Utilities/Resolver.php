@@ -80,11 +80,13 @@ class Resolver
      * Resolves the routes and throws an exception if there is a method mismatch
      *
      * @return void
+     * @throws RouteNotFoundException
      * @throws WrongHttpMethodException
      */
     private function resolve()
     {
-        $routes = $this->router->routes();
+        $matched = 0;
+        $routes  = $this->router->routes();
 
         foreach ($routes as $route) {
             $parsed = $this->parser->parse($route);
@@ -94,17 +96,23 @@ class Resolver
                     throw new WrongHttpMethodException('This Request Method Is Not Allowed');
                 }
 
+                $handler = $route->getHandler();
+
                 $this->setResolution(true);
 
                 if (isset($parsed['mapped'])) {
-                    call_user_func($route->getHandler($parsed['mapped']));
+                    $handler($parsed['mapped']);
                 } else {
-                    call_user_func($route->getHandler());
+                    $handler();
                 }
+
+                $matched++;
 
                 break;
             }
+        }
 
+        if ($matched === 0) {
             throw new RouteNotFoundException('There are no matching routes');
         }
     }

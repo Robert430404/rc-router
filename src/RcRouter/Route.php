@@ -24,8 +24,6 @@ class Route
      */
     private $handler;
 
-    private $data;
-
     /**
      * Route constructor.
      *
@@ -38,7 +36,6 @@ class Route
         $this->uri     = $uri;
         $this->methods = $methods;
         $this->handler = $handler;
-        $this->data    = null;
     }
 
     /**
@@ -69,25 +66,5 @@ class Route
     public function getHandler(): Callable
     {
         return $this->handler;
-    }
-
-    /**
-     * Returns the handler for the route
-     *
-     * @return null|array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Sets the mapped data for the routes
-     *
-     * @param $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
     }
 }

@@ -149,4 +149,64 @@ class RouterTest extends TestCase
 
         new Resolver('/', 'GET', $router);
     }
+
+    /**
+     * Makes sure query string parsing works on simple routes
+     */
+    public function testWorkingQueryStringRoute()
+    {
+        $router = new Router();
+        $router->request(['DELETE'], '/?test=test', function () {
+            return true;
+        });
+
+        $resolution = (new Resolver('/?test=test', 'DELETE', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
+    }
+
+    /**
+     * Makes sure unmatched query string routes throw exception
+     */
+    public function testBrokenQueryStringRoute()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        $router = new Router();
+        $router->request(['DELETE'], '/home?test=test', function () {
+            return true;
+        });
+
+        new Resolver('/?test=test', 'DELETE', $router);
+    }
+
+    /**
+     * Makes sure query string parsing works on simple routes
+     */
+    public function testWorkingRegexRoute()
+    {
+        $router = new Router();
+        $router->request(['DELETE'], '/home/{string}/{id:i}', function () {
+            return true;
+        });
+
+        $resolution = (new Resolver('/home/test/1', 'DELETE', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
+    }
+
+    /**
+     * Makes sure unmatched query string routes throw exception
+     */
+    public function testBrokenRegexRoute()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        $router = new Router();
+        $router->request(['DELETE'], '/home/{string}/{id:i}', function () {
+            return true;
+        });
+
+        new Resolver('/broken/test/1', 'DELETE', $router);
+    }
 }
