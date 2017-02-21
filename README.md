@@ -51,6 +51,31 @@ try {
 }
 ```
 
+#### How Do The Placeholders Work?
+
+When there are placeholders in your route they are returned to you as an array that you can access in your handler.
+
+You have access to string placeholders. When you define your routes, you use {} to define string placeholders like this:
+
+```php
+<?php
+
+$router->request(['GET'], '/{placeholder}', function ($mapped) {
+    // Deal with returned data and route response here.
+});
+```
+
+You also have access to integer placeholders. When you define your route, you use {:i} to define integer placeholders
+like this:
+
+```php
+<?php
+
+$router->request(['GET'], '/{placeholder:i}', function ($mapped) {
+    // Deal with returned data and route response here.
+});
+```
+
 ### What Are Some Of The Features?
 
 The router supports both string and integer url variables, and passes them back to you in an array.
