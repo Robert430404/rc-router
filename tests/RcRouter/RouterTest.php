@@ -166,6 +166,21 @@ class RouterTest extends TestCase
     }
 
     /**
+     * Makes sure query string parsing works on simple routes
+     */
+    public function testLongerWorkingQueryStringRoute()
+    {
+        $router = new Router();
+        $router->request(['GET'], '/home/?test=test', function () {
+            return true;
+        });
+
+        $resolution = (new Resolver('/home/?test=test', 'GET', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
+    }
+
+    /**
      * Makes sure unmatched query string routes throw exception
      */
     public function testBrokenQueryStringRoute()
