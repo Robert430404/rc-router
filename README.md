@@ -51,6 +51,17 @@ try {
 }
 ```
 
+### What Are Some Of The Features?
+
+The router supports both string and integer url variables, and passes them back to you in an array.
+You can extend this further in any way you want. The router is very flexible in how you can use it.
+
+You can either pass in a closure, or a named handler function to each route to control what happens
+when a route is matched.
+
+When a route is not found, a RouteNotFoundException is thrown from the resolver and allows you to catch
+and then create your 404 handler. 
+
 #### How Do The Placeholders Work?
 
 When there are placeholders in your route they are returned to you as an array that you can access in your handler.
@@ -75,17 +86,6 @@ $router->request(['GET'], '/{placeholder:i}', function ($mapped) {
     // Deal with returned data and route response here.
 });
 ```
-
-### What Are Some Of The Features?
-
-The router supports both string and integer url variables, and passes them back to you in an array.
-You can extend this further in any way you want. The router is very flexible in how you can use it.
-
-You can either pass in a closure, or a named handler function to each route to control what happens
-when a route is matched.
-
-When a route is not found, a RouteNotFoundException is thrown from the resolver and allows you to catch
-and then create your 404 handler. 
 
 
 ### Some Examples
