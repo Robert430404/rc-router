@@ -156,11 +156,11 @@ class RouterTest extends TestCase
     public function testWorkingQueryStringRoute()
     {
         $router = new Router();
-        $router->request(['DELETE'], '/?test=test', function () {
+        $router->request(['GET'], '/?test=test', function () {
             return true;
         });
 
-        $resolution = (new Resolver('/?test=test', 'DELETE', $router))->getResolution();
+        $resolution = (new Resolver('/?test=test', 'GET', $router))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -173,11 +173,11 @@ class RouterTest extends TestCase
         $this->expectException(RouteNotFoundException::class);
 
         $router = new Router();
-        $router->request(['DELETE'], '/home?test=test', function () {
+        $router->request(['GET'], '/home?test=test', function () {
             return true;
         });
 
-        new Resolver('/?test=test', 'DELETE', $router);
+        new Resolver('/?test=test', 'GET', $router);
     }
 
     /**
@@ -186,11 +186,11 @@ class RouterTest extends TestCase
     public function testWorkingRegexRoute()
     {
         $router = new Router();
-        $router->request(['DELETE'], '/home/{string}/{id:i}', function () {
+        $router->request(['GET'], '/home/{string}/{id:i}', function () {
             return true;
         });
 
-        $resolution = (new Resolver('/home/test/1', 'DELETE', $router))->getResolution();
+        $resolution = (new Resolver('/home/test/1', 'GET', $router))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -203,10 +203,25 @@ class RouterTest extends TestCase
         $this->expectException(RouteNotFoundException::class);
 
         $router = new Router();
-        $router->request(['DELETE'], '/home/{string}/{id:i}', function () {
+        $router->request(['GET'], '/home/{string}/{id:i}', function () {
             return true;
         });
 
-        new Resolver('/broken/test/1', 'DELETE', $router);
+        new Resolver('/broken/test/1', 'GET', $router);
+    }
+
+    /**
+     * Makes sure unmatched query string routes throw exception
+     */
+    public function testMisMatchedRegexRoute()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        $router = new Router();
+        $router->request(['GET'], '/home/{string}/{id:i}/{id:i}', function () {
+            return true;
+        });
+
+        new Resolver('/broken/test/1', 'GET', $router);
     }
 }
