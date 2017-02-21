@@ -11,6 +11,9 @@ use RcRouter\Contracts\RouterInterface;
  */
 class Router implements RouterInterface
 {
+    /**
+     * @var array
+     */
     private $requests;
 
     /**
