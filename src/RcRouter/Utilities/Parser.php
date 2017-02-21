@@ -2,6 +2,8 @@
 
 namespace RcRouter\Utilities;
 
+use RcRouter\Route;
+
 /**
  * Class Parser
  *
@@ -12,7 +14,7 @@ class Parser
     /**
      * @var string
      */
-    private $uri;
+    private $requestUri;
 
     /**
      * @var string
@@ -37,11 +39,11 @@ class Parser
     /**
      * Parser constructor.
      *
-     * @param string $uri
+     * @param string $requestUri
      */
-    function __construct(string $uri)
+    function __construct(string $requestUri)
     {
-        $this->uri               = $uri;
+        $this->requestUri        = $requestUri;
         $this->intRegex          = '/\/([\-0-9]+)/';
         $this->stringRegex       = '/\/([a-zA-Z]+)/';
         $this->intPlaceholder    = '/{([A-Za-z]+:[i])}/';
@@ -51,104 +53,118 @@ class Parser
     /**
      * Starts Parsing Process
      *
-     * @param string $uri
-     * @param $handler
-     * @return bool
+     * @param Route $route
+     * @return array
      */
-    public function parse(string $uri, $handler): bool
+    public function parse(Route $route): array
     {
-        if ($this->matchSimpleRoute($uri, $handler)) {
-            return true;
+        $simple      = $this->matchSimpleRoute($route);
+        $queryString = $this->matchQueryStringRoute($route);
+        $regex       = $this->matchRegexRoute($route);
+
+        if ($simple['matched']) {
+            return $simple;
         }
 
-        if ($this->matchQueryStringRoute($uri, $handler)) {
-            return true;
+        if ($queryString['matched']) {
+            return $queryString;
         }
 
-        if ($this->matchRegexRoute($uri, $handler)) {
-            return true;
+        if ($regex['matched']) {
+            return $regex;
         }
 
-        return false;
+        return [
+            'matched' => false,
+        ];
     }
 
     /**
      * Matches Simple Routes
      *
-     * @param string $uri
-     * @param $handler
-     * @return bool
+     * @param Route $route
+     * @return array
      */
-    private function matchSimpleRoute(string $uri, $handler): bool
+    private function matchSimpleRoute(Route $route): array
     {
-        if ($this->uri === $uri) {
-            $handler();
+        $uri = $route->getUri();
 
-            return true;
+        if ($this->requestUri === $uri) {
+            return [
+                'matched' => true,
+            ];
         }
 
-        return false;
+        return [
+            'matched' => false,
+        ];
     }
 
     /**
      * Matches Routes With Query String
      *
-     * @param string $uri
-     * @param $handler
-     * @return bool
+     * @param Route $route
+     * @return array
      */
-    private function matchQueryStringRoute(string $uri, $handler): bool
+    private function matchQueryStringRoute(Route $route): array
     {
-        $parts = explode('?', $this->uri);
+        $uri   = $route->getUri();
+        $parts = explode('?', $this->requestUri);
 
         if ($parts[0] === $uri) {
-            $handler();
-
-            return true;
+            return [
+                'matched' => true,
+            ];
         }
 
-        return false;
+        return [
+            'matched' => false,
+        ];
     }
 
     /**
      * Matches Routes With Regex Placeholders
      *
-     * @param string $route
-     * @param $handler
-     * @return bool
+     * @param Route $route
+     * @return array
      */
-    private function matchRegexRoute(string $route, $handler): bool
+    private function matchRegexRoute(Route $route): array
     {
-        $mapped     = null;
-        $routeArray = explode('/', $route);
-        $uriArray   = explode('/', $this->uri);
+        $mapped          = null;
+        $routeUriArray   = explode('/', $route->getUri());
+        $requestUriArray = explode('/', $this->requestUri);
 
-        if (strpos($this->uri, '?') > 0) {
-            $parts    = explode('?', $this->uri);
-            $uriArray = explode('/', $parts[0]);
+        if (strpos($this->requestUri, '?') > 0) {
+            $parts           = explode('?', $this->requestUri);
+            $requestUriArray = explode('/', $parts[0]);
         }
 
-        if (count($routeArray) !== count($uriArray)) {
-            return false;
+        if (count($routeUriArray) !== count($requestUriArray)) {
+            return [
+                'matched' => false,
+            ];
         }
 
-        array_shift($routeArray);
-        array_shift($uriArray);
+        array_shift($routeUriArray);
+        array_shift($requestUriArray);
 
-        $mapped       = $this->mapParams($routeArray, $uriArray);
+        $mapped       = $this->mapParams($routeUriArray, $requestUriArray);
         $matchedRoute = '/' . implode('/', $mapped['all']);
 
         if (isset($parts)) {
             $matchedRoute = '/' . implode('/', $mapped['all']) . '?' . $parts[1];
         }
 
-        if ($this->uri === $matchedRoute) {
-            $handler($mapped);
-
-            return true;
+        if ($this->requestUri === $matchedRoute) {
+            return [
+                'matched' => true,
+                'mapped'  => $mapped,
+            ];
         }
 
-        return false;
+        return [
+            'matched' => false,
+        ];
     }
 
     /**

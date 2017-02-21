@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use RcRouter\Exceptions\RouteNotFoundException;
 use RcRouter\Exceptions\WrongHttpMethodException;
 use RcRouter\Router;
+use RcRouter\Utilities\Resolver;
 
 /**
  * Class RouterTest
@@ -21,10 +22,12 @@ class RouterTest extends TestCase
     {
         $this->expectException(WrongHttpMethodException::class);
 
-        $router = new Router('/', 'INVALID');
-        $router->get('/', function () {
+        $router = new Router();
+        $router->request(['GET'], '/', function () {
             return true;
         });
+
+        new Resolver('/', 'INVALID', $router);
     }
 
     /**
@@ -32,12 +35,14 @@ class RouterTest extends TestCase
      */
     public function testGetRequestExecution()
     {
-        $router  = new Router('/', 'GET');
-        $request = $router->get('/', function () {
+        $router = new Router();
+        $router->request(['GET'], '/', function () {
             return true;
         });
 
-        $this->assertEquals($request, true);
+        $resolution = (new Resolver('/', 'GET', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
     }
 
     /**
@@ -47,10 +52,12 @@ class RouterTest extends TestCase
     {
         $this->expectException(WrongHttpMethodException::class);
 
-        $router = new Router('/', 'INVALID');
-        $router->post('/', function () {
+        $router = new Router();
+        $router->request(['POST'], '/', function () {
             return true;
         });
+
+        new Resolver('/', 'INVALID', $router);
     }
 
     /**
@@ -58,12 +65,14 @@ class RouterTest extends TestCase
      */
     public function testPostRequestExecution()
     {
-        $router  = new Router('/', 'POST');
-        $request = $router->post('/', function () {
+        $router = new Router();
+        $router->request(['POST'], '/', function () {
             return true;
         });
 
-        $this->assertEquals($request, true);
+        $resolution = (new Resolver('/', 'POST', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
     }
 
     /**
@@ -73,10 +82,12 @@ class RouterTest extends TestCase
     {
         $this->expectException(WrongHttpMethodException::class);
 
-        $router = new Router('/', 'INVALID');
-        $router->put('/', function () {
+        $router = new Router();
+        $router->request(['PUT'], '/', function () {
             return true;
         });
+
+        new Resolver('/', 'INVALID', $router);
     }
 
     /**
@@ -84,12 +95,14 @@ class RouterTest extends TestCase
      */
     public function testPutRequestExecution()
     {
-        $router  = new Router('/', 'PUT');
-        $request = $router->put('/', function () {
+        $router = new Router();
+        $router->request(['PUT'], '/', function () {
             return true;
         });
 
-        $this->assertEquals($request, true);
+        $resolution = (new Resolver('/', 'PUT', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
     }
 
     /**
@@ -99,10 +112,12 @@ class RouterTest extends TestCase
     {
         $this->expectException(WrongHttpMethodException::class);
 
-        $router = new Router('/', 'INVALID');
-        $router->delete('/', function () {
+        $router = new Router();
+        $router->request(['DELETE'], '/', function () {
             return true;
         });
+
+        new Resolver('/', 'INVALID', $router);
     }
 
     /**
@@ -110,12 +125,14 @@ class RouterTest extends TestCase
      */
     public function testDeleteRequestExecution()
     {
-        $router  = new Router('/', 'DELETE');
-        $request = $router->delete('/', function () {
+        $router = new Router();
+        $router->request(['DELETE'], '/', function () {
             return true;
         });
 
-        $this->assertEquals($request, true);
+        $resolution = (new Resolver('/', 'DELETE', $router))->getResolution();
+
+        $this->assertEquals($resolution, true);
     }
 
     /**
@@ -125,14 +142,11 @@ class RouterTest extends TestCase
     {
         $this->expectException(RouteNotFoundException::class);
 
-        $router = new Router('/', 'GET');
-
-        $router->get('/different/route', function () {
+        $router = new Router();
+        $router->request(['GET'], '/failed-route', function () {
             return true;
         });
 
-        $router->notFound(function () {
-            throw new RouteNotFoundException('There is not matching routes.');
-        });
+        new Resolver('/', 'GET', $router);
     }
 }

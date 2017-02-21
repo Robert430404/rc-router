@@ -3,8 +3,6 @@
 namespace RcRouter;
 
 use RcRouter\Contracts\RouterInterface;
-use RcRouter\Exceptions\WrongHttpMethodException;
-use RcRouter\Utilities\Parser;
 
 /**
  * Class Router
@@ -13,104 +11,34 @@ use RcRouter\Utilities\Parser;
  */
 class Router implements RouterInterface
 {
-    /**
-     * @var Parser
-     */
-    private $parser;
-
-    /**
-     * @var string
-     */
-    private $method;
+    private $requests;
 
     /**
      * Router constructor.
-     *
-     * @param string $uri
-     * @param string $method
      */
-    public function __construct(string $uri, string $method)
+    public function __construct()
     {
-        $this->parser = new Parser($uri);
-        $this->method = $method;
+        $this->requests = [];
     }
 
     /**
-     * Sends GET Request To Route
-     *
+     * @param array $methods
      * @param string $uri
-     * @param $handler
-     * @return bool
-     * @throws WrongHttpMethodException
+     * @param callable $handler
+     * @return mixed|void
      */
-    public function get(string $uri, $handler): bool
+    public function request(array $methods, string $uri, Callable $handler)
     {
-        if ($this->method !== 'GET') {
-            throw new WrongHttpMethodException('This is not a GET request.');
-        }
-
-        return $this->parser->parse($uri, $handler);
+        array_push($this->requests, new Route($methods, $uri, $handler));
     }
 
     /**
-     * Sends POST Request To Route
+     * Returns the registered routes for resolution
      *
-     * @param string $uri
-     * @param $handler
-     * @return bool
-     * @throws WrongHttpMethodException
+     * @return array
      */
-    public function post(string $uri, $handler): bool
+    public function routes(): array
     {
-        if ($this->method !== 'POST') {
-            throw new WrongHttpMethodException('This is not a POST request.');
-        }
-
-        return $this->parser->parse($uri, $handler);
-    }
-
-    /**
-     * Sends PUT Request To Route
-     *
-     * @param string $uri
-     * @param $handler
-     * @return bool
-     * @throws WrongHttpMethodException
-     */
-    public function put(string $uri, $handler): bool
-    {
-        if ($this->method !== 'PUT') {
-            throw new WrongHttpMethodException('This is not a PUT request.');
-        }
-
-        return $this->parser->parse($uri, $handler);
-    }
-
-    /**
-     * Sends DELETE Request To Route
-     *
-     * @param string $uri
-     * @param $handler
-     * @return bool
-     * @throws WrongHttpMethodException
-     */
-    public function delete(string $uri, $handler): bool
-    {
-        if ($this->method !== 'DELETE') {
-            throw new WrongHttpMethodException('This is not a DELETE request.');
-        }
-
-        return $this->parser->parse($uri, $handler);
-    }
-
-    /**
-     * This handles any unregistered or not found routes.
-     *
-     * @param $handler
-     * @return void
-     */
-    public function notFound($handler)
-    {
-        $handler();
+        return $this->requests;
     }
 }
