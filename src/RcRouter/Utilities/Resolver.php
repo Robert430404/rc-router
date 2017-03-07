@@ -51,13 +51,18 @@ class Resolver
         string $uri,
         string $method,
         Router $router,
-        ParserInterface $parser
+        ParserInterface $parser = null
     ) {
         $this->uri        = $uri;
         $this->method     = $method;
         $this->router     = $router;
         $this->resolution = false;
-        $this->parser     = $parser->setUri($this->uri);
+
+        if ($parser === null) {
+            $this->parser = (new Parser())->setUri($this->uri);
+        } else {
+            $this->parser = $parser->setUri($this->uri);
+        }
 
         $this->resolve();
     }
