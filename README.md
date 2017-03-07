@@ -62,6 +62,35 @@ when a route is matched.
 When a route is not found, a RouteNotFoundException is thrown from the resolver and allows you to catch
 and then create your 404 handler. 
 
+You can also now write in your own custom parsers and pass them into the resolver to make things like 
+Controller@Action calling a lot easier and cleaner to implement.
+
+```php
+<?php
+
+use RcRouter\Router;
+use RcRouter\Utilities\Resolver;
+use RcRouter\Exceptions\RouteNotFoundException;
+use YourProject\Routing\CustomParser;
+
+include 'vendor/autoload.php';
+
+$router = new Router();
+
+$router->request(['GET'], '/', function () {
+    echo 'Closure Handler Test';
+});
+
+$uri    = $_SERVER['REQUEST_URI'];    // You do not have to use globals here if you have access to a different source.
+$method = $_SERVER['REQUEST_METHOD']; // You simply need to pass these (uri and method) as strings to the Resolver.
+
+try {
+    new Resolver($uri, $method, $router, new CustomParser());
+} catch (RouteNotFoundException $e) {
+    echo '404 not found';
+}
+```
+
 #### How Do The Placeholders Work?
 
 When there are placeholders in your route they are returned to you as an array that you can access in your handler.
