@@ -2,6 +2,7 @@
 
 namespace RcRouter\Utilities;
 
+use RcRouter\Contracts\ParserInterface;
 use RcRouter\Route;
 
 /**
@@ -9,7 +10,7 @@ use RcRouter\Route;
  *
  * @package RcRouter\Utilities
  */
-class Parser
+class Parser implements ParserInterface
 {
     /**
      * @var string
@@ -38,12 +39,9 @@ class Parser
 
     /**
      * Parser constructor.
-     *
-     * @param string $requestUri
      */
-    function __construct(string $requestUri)
+    function __construct()
     {
-        $this->requestUri        = $requestUri;
         $this->intRegex          = '/\/([\-0-9]+)/';
         $this->stringRegex       = '/\/([a-zA-Z]+)/';
         $this->intPlaceholder    = '/{([A-Za-z]+:[i])}/';
@@ -77,6 +75,19 @@ class Parser
         return [
             'matched' => false,
         ];
+    }
+
+    /**
+     * Sets the URI for parsing
+     *
+     * @param string $requestUri
+     * @return Parser
+     */
+    public function setUri(string $requestUri)
+    {
+        $this->requestUri = $requestUri;
+
+        return $this;
     }
 
     /**

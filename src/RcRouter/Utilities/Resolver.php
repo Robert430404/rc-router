@@ -2,6 +2,7 @@
 
 namespace RcRouter\Utilities;
 
+use RcRouter\Contracts\ParserInterface;
 use RcRouter\Exceptions\RouteNotFoundException;
 use RcRouter\Exceptions\WrongHttpMethodException;
 use RcRouter\Router;
@@ -44,14 +45,19 @@ class Resolver
      * @param string $uri
      * @param string $method
      * @param Router $router
+     * @param ParserInterface $parser
      */
-    function __construct(string $uri, string $method, Router $router)
-    {
+    function __construct(
+        string $uri,
+        string $method,
+        Router $router,
+        ParserInterface $parser
+    ) {
         $this->uri        = $uri;
         $this->method     = $method;
         $this->router     = $router;
         $this->resolution = false;
-        $this->parser     = new Parser($this->uri);
+        $this->parser     = $parser->setUri($this->uri);
 
         $this->resolve();
     }

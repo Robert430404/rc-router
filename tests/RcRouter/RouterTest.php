@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use RcRouter\Exceptions\RouteNotFoundException;
 use RcRouter\Exceptions\WrongHttpMethodException;
 use RcRouter\Router;
+use RcRouter\Utilities\Parser;
 use RcRouter\Utilities\Resolver;
 
 /**
@@ -27,7 +28,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/', 'INVALID', $router);
+        new Resolver('/', 'INVALID', $router, new Parser());
     }
 
     /**
@@ -40,7 +41,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/', 'GET', $router))->getResolution();
+        $resolution = (new Resolver('/', 'GET', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -57,7 +58,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/', 'INVALID', $router);
+        new Resolver('/', 'INVALID', $router, new Parser());
     }
 
     /**
@@ -70,7 +71,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/', 'POST', $router))->getResolution();
+        $resolution = (new Resolver('/', 'POST', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -87,7 +88,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/', 'INVALID', $router);
+        new Resolver('/', 'INVALID', $router, new Parser());
     }
 
     /**
@@ -100,7 +101,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/', 'PUT', $router))->getResolution();
+        $resolution = (new Resolver('/', 'PUT', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -117,7 +118,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/', 'INVALID', $router);
+        new Resolver('/', 'INVALID', $router, new Parser());
     }
 
     /**
@@ -130,7 +131,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/', 'DELETE', $router))->getResolution();
+        $resolution = (new Resolver('/', 'DELETE', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -147,7 +148,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/', 'GET', $router);
+        new Resolver('/', 'GET', $router, new Parser());
     }
 
     /**
@@ -160,7 +161,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/?test=test', 'GET', $router))->getResolution();
+        $resolution = (new Resolver('/?test=test', 'GET', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -175,7 +176,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/home/?test=test', 'GET', $router))->getResolution();
+        $resolution = (new Resolver('/home/?test=test', 'GET', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -192,7 +193,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/?test=test', 'GET', $router);
+        new Resolver('/?test=test', 'GET', $router, new Parser());
     }
 
     /**
@@ -205,7 +206,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        $resolution = (new Resolver('/home/test/1', 'GET', $router))->getResolution();
+        $resolution = (new Resolver('/home/test/1', 'GET', $router, new Parser()))->getResolution();
 
         $this->assertEquals($resolution, true);
     }
@@ -222,7 +223,7 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/broken/test/1', 'GET', $router);
+        new Resolver('/broken/test/1', 'GET', $router, new Parser());
     }
 
     /**
@@ -237,6 +238,6 @@ class RouterTest extends TestCase
             return true;
         });
 
-        new Resolver('/broken/test/1', 'GET', $router);
+        new Resolver('/broken/test/1', 'GET', $router, new Parser());
     }
 }
