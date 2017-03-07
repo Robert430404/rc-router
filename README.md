@@ -91,6 +91,8 @@ try {
 }
 ```
 
+If you don't pass a cusom parser, it defaults to the built in parser.
+
 #### How Do The Placeholders Work?
 
 When there are placeholders in your route they are returned to you as an array that you can access in your handler.
